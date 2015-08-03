@@ -1,14 +1,14 @@
 var express = require('express');
 var config = require('./config');
 var path = require('path');
-var gpio = require('pi-gpio'),
-var async = require('async'),
+var gpio = require('pi-gpio');
+var async = require('async');
 var app =  express();
 
 var GARAGE_STATE = { 
-	UNKNOWN:0; 
-	CLOSED:1; 
-	OPEN:2; 
+	UNKNOWN:0,
+	CLOSED:1,
+	OPEN:2,
 	TRANSISTION: 4 
 };
 
@@ -42,7 +42,7 @@ app.get('/state', function(request, response) {
 	  response.json(getGarageState());
 });
 
-function() triggerGarage(request, response, state) {
+function triggerGarage(request, response, state) {
 	garageState = GARAGE_STATE.TRANSITION;
 	async.series([
 		function(callback) {
@@ -71,7 +71,7 @@ function() triggerGarage(request, response, state) {
 	]);
 };
 
-function() getGarageState() {
+function getGarageState() {
 	if(garageState == GARAGE_STATE.CLOSED) {
 		return "closed";
 	} 
