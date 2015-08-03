@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Garage</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimal-ui">
+	<link rel="home" sizes="120x120" href="home.png">
+	<style>
+	html, body, div, button {
+		margin: 0;
+		padding: 0;
+		font-family: "Helvetica Neue";
+	}
+	body {
+		background-color: #EAEAEA;
+	}
+	button {
+		padding: 25px;
+		margin: 5%;
+		font-size: 1.5em;
+	}
+	.wrapper {
+    text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<button onclick="openGarage()"><img src="open.jpg" alt="Open Garage"></button>
+		<button onclick="closeGarage()"><img src="close.jpg" alt="Close Garage"></button>
+	</div>
+	
+	<script>
+		function post(url) {
+			var request = new XMLHttpRequest();
+			request.open('POST', url, true);
+			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+			request.send({});
+		};
+		function openGarage() { post("/open"); }
+		function closeGarage() { post("/close"); }
+	</script>
+</body>
+</html>
