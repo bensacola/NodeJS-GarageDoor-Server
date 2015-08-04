@@ -8,10 +8,17 @@ var app =  express();
 var listenPort = config.PORT || 4351;
 
 var GARAGE_STATE = { 
+<<<<<<< HEAD
 	UNKNOWN:0, 
 	CLOSED:1,
 	OPEN:2,
 	TRANSISTION: 4
+=======
+	UNKNOWN:0,
+	CLOSED:1,
+	OPEN:2,
+	TRANSISTION: 4 
+>>>>>>> fc0182abe8039796760f0426fab4e91585eacda8
 };
 var garageState = GARAGE_STATE.CLOSED;
 
