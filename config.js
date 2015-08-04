@@ -9,4 +9,6 @@ config.RELAY_DELAY = 500;
 
 config.GARAGE_PIN = 8;
 
+config.PORT = 4351;
+
 module.exports = config;
