@@ -123,11 +123,6 @@ gpio.open(config.INPUT_OPEN, "input", function() {
 gpio.open(config.INPUT_CLOSED, "input", function() {
 	gpio.setDirection(config.INPUT_CLOSED, "input");
 });
-//gpio.open(12, "output", function() {
-//	gpio.setDirection(12,"output", function() {
-//	  gpio.close(12);
-//	});
-//});
 
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
