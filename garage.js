@@ -1,7 +1,7 @@
 var express = require('express');
 var config = require('./config');
 var path = require('path');
-var gpio = require('pi-gpio');
+var gpio = require('rpi-gpio');
 var async = require('async');
 var app =  express();
 var read = require("read");
@@ -116,19 +116,21 @@ app.get('/config', function(request, response) {
 app.get('/*', function(request, response) {
 	response.redirect('/');
 });
-
+/*
 gpio.open(config.INPUT_OPEN, "input", function() {
 	gpio.setDirection(config.INPUT_OPEN, "input");
 });
-gpio.open(config.INPUT_CLOSED, "input", function() {
-	gpio.setDirection(config.INPUT_CLOSED, "input");
+*/
+gpio.setup(config.INPUT_CLOSED, gpio.DIR_IN, function() {
+	gpio.read(config.INPUT_CLOSED,  function(err,value) {
+	  console.log(err || "pin value :" + value);
+	});
 });
 
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
-	var port = server.address().port;
-	console.log('Server listening at http://%s:%s', host, port);
-//	readCredentials();
+  var port = server.address().port;
+  console.log('Server listening at http://%s:%s', host, port);
 });
 
 function readCredentials() {
