@@ -45,11 +45,41 @@ app.post('/close', function(request, response) {
 });
 
 app.get('/state/open', function(request, response) {
-	 getGarageState(config.INPUT_OPEN,response);
+		gpio.setup(config.INPUT_CLOSED, gpio.DIR_IN, function() {
+		gpio.read(config.INPUT_CLOSED,  function(err, value) {
+			if(value == false) {
+				console.log(err || "closed");		
+				response.json(err || "closed");
+			} 
+			else if(value == true ){
+				console.log(err || "open");
+				response.json(err || "open");
+			} 
+			else {
+				console.log(err || "unknown");
+				response.json(err || "unknown");
+			}
+		});
+	});
 });
 
 app.get('/state/closed', function(request, response) {
-	  getGarageState(config.INPUT_CLOSED,response);
+	gpio.setup(config.INPUT_OPEN, gpio.DIR_IN, function() {
+		gpio.read(config.INPUT_OPEN,  function(err, value) {
+			if(value == false) {
+				console.log(err || "closed");		
+				response.json(err || "closed");
+			} 
+			else if(value == true ){
+				console.log(err || "open");
+				response.json(err || "open");
+			} 
+			else {
+				console.log(err || "unknown");
+				response.json(err || "unknown");
+			}
+		});
+	});
 });
 
 function triggerGarage(request, response, state) {
@@ -81,7 +111,7 @@ function triggerGarage(request, response, state) {
 	]);
 };
 
-function getGarageState(pin, response) {
+function getGarageState(pin, response, callback) {
 	readGarageState(pin, function(err, value) {
 		if(value == false) {
 			console.log(err || "closed");		
