@@ -117,23 +117,23 @@ app.get('/*', function(request, response) {
 	response.redirect('/');
 });
 
-gpio.open(config.INPUT_OPEN, {}, function() {
+gpio.open(config.INPUT_OPEN, "input", function() {
 	gpio.setDirection(config.INPUT_OPEN, "input");
 });
-gpio.open(config.INPUT_CLOSED, {}, function() {
+gpio.open(config.INPUT_CLOSED, "input", function() {
 	gpio.setDirection(config.INPUT_CLOSED, "input");
 });
-gpio.open(config.12, {}, function() {
-	gpio.setDirection(12,"output", function() {
-	  gpio.close(12);
-	});
-});
+//gpio.open(12, "output", function() {
+//	gpio.setDirection(12,"output", function() {
+//	  gpio.close(12);
+//	});
+//});
 
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
 	var port = server.address().port;
 	console.log('Server listening at http://%s:%s', host, port);
-	readCredentials();
+//	readCredentials();
 });
 
 function readCredentials() {
