@@ -45,7 +45,7 @@ app.post('/close', function(request, response) {
 });
 
 app.get('/state/open', function(request, response) {
-	  getGarageState(config.INPUT_OPEN,response);
+	 getGarageState(config.INPUT_OPEN,response);
 });
 
 app.get('/state/closed', function(request, response) {
@@ -91,12 +91,20 @@ function getGarageState(pin, response) {
 			console.log(err || "open");
 			response.send(err || "open");
 		} 
+		else {
+			console.log(err || "unknown");
+			response.send(err || "unknown");
+		}
 	});
 };
 
+
 function readGarageState(pin,callback) {
-  gpio.read(pin, callback);
+	gpio.setup(pin, gpio.DIR_IN, function() {
+		gpio.read(pin,  callback);
+	});
 };
+
 
 function delayPinWrite(pin, value, callback) {
 	setTimeout(function() {
@@ -115,16 +123,6 @@ app.get('/config', function(request, response) {
 
 app.get('/*', function(request, response) {
 	response.redirect('/');
-});
-/*
-gpio.open(config.INPUT_OPEN, "input", function() {
-	gpio.setDirection(config.INPUT_OPEN, "input");
-});
-*/
-gpio.setup(config.INPUT_CLOSED, gpio.DIR_IN, function() {
-	gpio.read(config.INPUT_CLOSED,  function(err,value) {
-	  console.log(err || "pin value :" + value);
-	});
 });
 
 var server = app.listen(listenPort, function() {
