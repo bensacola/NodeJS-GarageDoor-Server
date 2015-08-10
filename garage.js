@@ -83,11 +83,11 @@ function triggerGarage(request, response, state) {
 
 function getGarageState(pin, response) {
 	readGarageState(pin, function(err, value) {
-		if(value == STATE.CLOSED) {
+		if(value == false) {
 			console.log(err || "closed");		
 			response.send(err || "closed");
 		} 
-		else if(value == STATE.OPENED ){
+		else if(value == true ){
 			console.log(err || "open");
 			response.send(err || "open");
 		} 
