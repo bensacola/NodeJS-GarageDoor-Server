@@ -117,10 +117,17 @@ app.get('/*', function(request, response) {
 	response.redirect('/');
 });
 
-
-gpio.setDirection(config.INPUT_OPEN, "input");
-gpio.setDirection(config.INPUT_CLOSED, "input");
-gpio.setDirection(12,"output");
+gpio.open(config.INPUT_OPEN, {}, function() {
+	gpio.setDirection(config.INPUT_OPEN, "input");
+});
+gpio.open(config.INPUT_CLOSED, {}, function() {
+	gpio.setDirection(config.INPUT_CLOSED, "input");
+});
+gpio.open(config.12, {}, function() {
+	gpio.setDirection(12,"output", function() {
+	  gpio.close(12);
+	});
+});
 
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
