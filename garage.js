@@ -4,7 +4,7 @@ var path = require('path');
 var gpio = require('pi-gpio');
 var async = require('async');
 var app =  express();
-
+var read = require("read");
 var listenPort = config.PORT || 4351;
 
 var STATE = {  
@@ -45,11 +45,11 @@ app.post('/close', function(request, response) {
 });
 
 app.get('/state/open', function(request, response) {
-	  response.json(getGarageState(config.INPUT_OPEN,response));
+	  getGarageState(config.INPUT_OPEN,response);
 });
 
 app.get('/state/closed', function(request, response) {
-	  response.json(getGarageState(config.INPUT_CLOSED,response));
+	  getGarageState(config.INPUT_CLOSED,response);
 });
 
 function triggerGarage(request, response, state) {
@@ -82,7 +82,7 @@ function triggerGarage(request, response, state) {
 };
 
 function getGarageState(pin, response) {
-	readGarageState(pin, function(err, value) {}
+	readGarageState(pin, function(err, value) {
 		if(value == STATE.CLOSED) {
 			console.log(err || "closed");		
 			response.send(err || "closed");
@@ -116,6 +116,11 @@ app.get('/config', function(request, response) {
 app.get('/*', function(request, response) {
 	response.redirect('/');
 });
+
+
+gpio.setDirection(config.INPUT_OPEN, "input");
+gpio.setDirection(config.INPUT_CLOSED, "input");
+gpio.setDirection(12,"output");
 
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
