@@ -3,6 +3,7 @@ var config = require('./config');
 var path = require('path');
 var gpio = require('rpi-gpio');
 var async = require('async');
+var email = require('email');
 var app =  express();
 var read = require("read");
 var listenPort = config.PORT || 4351;
@@ -19,6 +20,44 @@ var garage = {
 };
 
 /**************************************************/
+
+gpio.on('change', function(channel, value) {
+    console.log('Channel ' + channel + ' value is now ' + value);
+    var email = {};
+    email.to = "freestylsurfr@cox.net";
+    email.subject = "RPI2 GPIO";
+    email.body = "GPIO PIN " + channel + " is now " + value;
+    sendEmail(email)
+});
+
+function sendEmail(options) {
+console.log('sending email');
+	var emailServer  = email.server.connect({
+		user: process.env.EMAIL_USER, 
+		password: process.env.EMAIL_PASS, 
+		host:"smtp.cox.net"
+		,port:465
+		,ssl:true
+		//,port:587
+		//,tls:true
+	});
+ var message = {
+		text:    options.body, 
+		from:    "benronan@cox.net", 
+		to:      options.to,
+		subject: options.subject
+ }
+ emailServer.send(message, function(err, message) {
+	 if(err) {
+		 console.log(err); 
+	 }
+	 else {
+		 console.log('sent email');
+	 }
+	 });
+
+};
+
 
 app.use('/', express.static(__dirname + '/public'));
 
@@ -170,4 +209,3 @@ function readCredentials() {
 		});
 	});	
 };
-
