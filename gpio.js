@@ -7,7 +7,7 @@ function GPIO() {
 	this.read = function(pin, onReadCallback) {
 	 gpio.setup(pin, gpio.DIR_IN, function(err) {
 			if(err) {
-				var errorMessage = "Error setting up gpio pin (" + pin +"). " + err);
+				var errorMessage = "Error setting up gpio pin (" + pin +"). " + err;
 				console.log(errorMessage);
 				onReadCallback(errorMessage);
 				return;
@@ -20,7 +20,7 @@ function GPIO() {
 	this.write = function(pin, value, onWriteCallback) {
 	 gpio.setup(pin, gpio.DIR_OUT, function(err) {
 			if(err) {
-				var errorMessage = "Error setting up gpio pin (" + pin +"). " + err);
+				var errorMessage = "Error setting up gpio pin (" + pin +"). " + err;
 				console.log(errorMessage);
 				onWriteCallback(errorMessage);
 				return;
