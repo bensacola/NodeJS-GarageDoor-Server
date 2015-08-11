@@ -87,26 +87,10 @@ function readCredentials() {
 
 function getGarageState(callback) {
 	var error, input_closed, input_open, garage_state = "UNKNOWN";
-	async.series([
-		function(){
-			console.log('read open');
-			gpio.read(config.INPUT_OPEN, function(err, value)  {
-				console.log('value is ' + value);
-				input_open = value;
-				error = err;
-			});
-console.log('read finished');
-		},
-		function(){
-console.log('read closed');
-			gpio.read(config.INPUT_CLOSED, function(err, value)  {
-				input_closed = value;
-				error = error || err;
-			});
-		},
-		function() {
-console.log('determine state');
-		        if(input_closed && !input_open) {
+	
+	var determineState = function() {
+		console.log('determine state');
+		  if(input_closed && !input_open) {
 			  garage_state = "CLOSED"
 			}
 			else if(!input_closed && input_open) {
@@ -115,10 +99,23 @@ console.log('determine state');
 			else {
 			  garage_state = "TRANSITIONING"
 		  }
-		},
-		function() {
-console.log('fire callback');
 			callback(error,garage_state);
-		}
-	]);
+		};
+	var readOpen = function() {
+		console.log('read open');
+		gpio.read(config.INPUT_OPEN, function(err, value)  {
+			console.log('value is ' + value);
+			input_open = value;
+			error = err;
+			determineState()
+		});
+	};
+	var readClosed = function() {
+	console.log('read closed');
+		gpio.read(config.INPUT_CLOSED, function(err, value)  {
+			input_closed = value;
+			error = error || err;
+			readOpen();
+		});
+	};
 };
