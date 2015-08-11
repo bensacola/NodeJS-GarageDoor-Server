@@ -86,27 +86,27 @@ function readCredentials() {
 
 
 function getGarageState(callback) {
-	var error, input_closed, input_open, garage_state;
+	var error, input_closed, input_open, garage_state = "UNKNOWN";
 	async.series([
 		function(){
-			var gpio = new GPIO();
+			console.log('read open');
 			gpio.read(config.INPUT_OPEN, function(err, value)  {
+				console.log('value is ' + value);
 				input_open = value;
 				error = err;
 			});
+console.log('read finished');
 		},
 		function(){
-			var gpio = new GPIO();
+console.log('read closed');
 			gpio.read(config.INPUT_CLOSED, function(err, value)  {
 				input_closed = value;
 				error = error || err;
 			});
 		},
 		function() {
-			if(error) {
-			  garage_state = "UNKNOWN";
-			}
-		  else if(input_closed && !input_open) {
+console.log('determine state');
+		        if(input_closed && !input_open) {
 			  garage_state = "CLOSED"
 			}
 			else if(!input_closed && input_open) {
@@ -116,6 +116,9 @@ function getGarageState(callback) {
 			  garage_state = "TRANSITIONING"
 		  }
 		},
-		callback(error,garage_state)
+		function() {
+console.log('fire callback');
+			callback(error,garage_state);
+		}
 	]);
 };
