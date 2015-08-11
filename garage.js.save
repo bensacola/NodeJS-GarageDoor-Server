@@ -1,9 +1,8 @@
 var express = require('express');
 var config = require('./config');
 var path = require('path');
-var gpio = require('rpi-gpio');
+var gpio = require('pi-gpio');
 var async = require('async');
-var email = require('emailjs');
 var app =  express();
 var read = require("read");
 var listenPort = config.PORT || 4351;
@@ -20,44 +19,6 @@ var garage = {
 };
 
 /**************************************************/
-
-gpio.on('change', function(channel, value) {
-    console.log('Channel ' + channel + ' value is now ' + value);
-    var email = {};
-    email.to = "freestylsurfr@cox.net";
-    email.subject = "RPI2 GPIO";
-    email.body = "GPIO PIN " + channel + " is now " + value;
-    sendEmail(email)
-});
-
-function sendEmail(options) {
-console.log('sending email');
-	var emailServer  = email.server.connect({
-		user: process.env.EMAIL_USER, 
-		password: process.env.EMAIL_PASS, 
-		host:"smtp.cox.net"
-		,port:465
-		,ssl:true
-		//,port:587
-		//,tls:true
-	});
- var message = {
-		text:    options.body, 
-		from:    "benronan@cox.net", 
-		to:      options.to,
-		subject: options.subject
- }
- emailServer.send(message, function(err, message) {
-	 if(err) {
-		 console.log(err); 
-	 }
-	 else {
-		 console.log('sent email');
-	 }
-	 });
-
-};
-
 
 app.use('/', express.static(__dirname + '/public'));
 
@@ -84,41 +45,11 @@ app.post('/close', function(request, response) {
 });
 
 app.get('/state/open', function(request, response) {
-		gpio.setup(config.INPUT_CLOSED, gpio.DIR_IN, function() {
-		gpio.read(config.INPUT_CLOSED,  function(err, value) {
-			if(value == false) {
-				console.log(err || "closed");		
-				response.json(err || "closed");
-			} 
-			else if(value == true ){
-				console.log(err || "open");
-				response.json(err || "open");
-			} 
-			else {
-				console.log(err || "unknown");
-				response.json(err || "unknown");
-			}
-		});
-	});
+	  getGarageState(config.INPUT_OPEN,response);
 });
 
 app.get('/state/closed', function(request, response) {
-	gpio.setup(config.INPUT_OPEN, gpio.DIR_IN, function() {
-		gpio.read(config.INPUT_OPEN,  function(err, value) {
-			if(value == false) {
-				console.log(err || "closed");		
-				response.json(err || "closed");
-			} 
-			else if(value == true ){
-				console.log(err || "open");
-				response.json(err || "open");
-			} 
-			else {
-				console.log(err || "unknown");
-				response.json(err || "unknown");
-			}
-		});
-	});
+	  getGarageState(config.INPUT_CLOSED,response);
 });
 
 function triggerGarage(request, response, state) {
@@ -150,30 +81,22 @@ function triggerGarage(request, response, state) {
 	]);
 };
 
-function getGarageState(pin, response, callback) {
+function getGarageState(pin, response) {
 	readGarageState(pin, function(err, value) {
-		if(value == false) {
+		if(value == STATE.CLOSED) {
 			console.log(err || "closed");		
 			response.send(err || "closed");
 		} 
-		else if(value == true ){
+		else if(value == STATE.OPENED ){
 			console.log(err || "open");
 			response.send(err || "open");
 		} 
-		else {
-			console.log(err || "unknown");
-			response.send(err || "unknown");
-		}
 	});
 };
-
 
 function readGarageState(pin,callback) {
-	gpio.setup(pin, gpio.DIR_IN, function() {
-		gpio.read(pin,  callback);
-	});
+  gpio.read(pin, callback);
 };
-
 
 function delayPinWrite(pin, value, callback) {
 	setTimeout(function() {
@@ -194,11 +117,17 @@ app.get('/*', function(request, response) {
 	response.redirect('/');
 });
 
+gpio.open(config.INPUT_OPEN, "input", function() {
+	gpio.setDirection(config.INPUT_OPEN, "input");
+);
+//gpio.open(config.INPUT_CLOSED, "input", function() {
+//	gpio.setDirection(config.INPUT_CLOSED, "input");
+//});
+
 var server = app.listen(listenPort, function() {
   var host = server.address().address;
   var port = server.address().port;
   console.log('Server listening at http://%s:%s', host, port);
-  readCredentials();
 });
 
 function readCredentials() {
@@ -210,3 +139,4 @@ function readCredentials() {
 		});
 	});	
 };
+
