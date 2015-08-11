@@ -29,14 +29,14 @@ app.get('/time', function(req, res) {
 app.get('/state/open', function(req, res) {
 	  var gpio = new GPIO();
 		gpio.read(config.INPUT_OPEN, function(err, value)  {
-		  req.send(err || value);
+		  res.send(err || value);
 		});
 });
 
 app.get('/state/closed', function(req, res) {
 	  var gpio = new GPIO();
 		gpio.read(config.INPUT_CLOSED, function(err, value)  {
-		  req.send(err || value);
+		  res.send(err || value);
 		});
 });
 
