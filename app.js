@@ -7,7 +7,7 @@ var read = require("read");
 
 //user defined includes
 var config = require('./config');
-var GPIO = require('./gpio');
+var gpio = new require('./gpio');
 
 //global variables 
 var listenPort = config.PORT || 4351;
@@ -27,14 +27,12 @@ app.get('/time', function(req, res) {
 });
 
 app.get('/state/open', function(req, res) {
-	  var gpio = new GPIO();
 		gpio.read(config.INPUT_OPEN, function(err, value)  {
 		  req.send(err || value);
 		});
 });
 
 app.get('/state/closed', function(req, res) {
-	  var gpio = new GPIO();
 		gpio.read(config.INPUT_CLOSED, function(err, value)  {
 		  req.send(err || value);
 		});
@@ -105,9 +103,9 @@ function getGarageState(callback) {
 		},
 		function() {
 			if(error) {
-			  garage_state = "UNKOWN";
+			  garage_state = "UNKNOWN";
 			}
-		  if(input_closed && !input_open) {
+		  else if(input_closed && !input_open) {
 			  garage_state = "CLOSED"
 			}
 			else if(!input_closed && input_open) {
