@@ -7,7 +7,8 @@ var read = require("read");
 
 //user defined includes
 var config = require('./config');
-var gpio = new require('./gpio');
+var GPIO = require('./gpio');
+var gpio = new GPIO();
 
 //global variables 
 var listenPort = config.PORT || 4351;
