@@ -198,6 +198,7 @@ var server = app.listen(listenPort, function() {
   var host = server.address().address;
   var port = server.address().port;
   console.log('Server listening at http://%s:%s', host, port);
+  readCredentials();
 });
 
 function readCredentials() {
